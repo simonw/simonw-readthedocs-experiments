@@ -24,7 +24,7 @@ jobs:
 
     - name: Check if stable-docs branch exists
       run: |
-         if ! git ls-remote --heads origin stable-docs | grep stable-docs; then
+        if ! git ls-remote --heads origin stable-docs | grep stable-docs; then
           git checkout -b stable-docs
           git push -u origin stable-docs
         fi
