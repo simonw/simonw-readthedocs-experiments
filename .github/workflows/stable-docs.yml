@@ -44,7 +44,14 @@ jobs:
         git fetch origin stable-docs:stable-docs
         git checkout stable-docs
         # !stable-docs should only be in the one commit, so apply changes from that commit
-        git show ${{ github.sha }} -- docs/ | git apply -
-        git add docs/
-        git commit -m "Cherry-picked docs changes from ${{ github.sha }}" || true
-        git push origin stable-docs
+        PATCH=$(git show ${{ github.sha }} -- docs/)
+        # Check if patch is non-empty
+        if [[ -n "$PATCH" ]]; then
+          echo "$PATCH" | git apply -
+          git add docs/
+          git commit -m "Cherry-picked docs changes from ${{ github.sha }}"
+          git push origin stable-docs
+        else
+          echo "No changes to docs/ in this commit."
+          exit 0
+        fi
