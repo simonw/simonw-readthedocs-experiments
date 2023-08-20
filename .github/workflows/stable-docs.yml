@@ -24,7 +24,7 @@ jobs:
 
     - name: Check if stable-docs branch exists
       run: |
-        if ! git rev-parse --verify stable-docs > /dev/null 2>&1; then
+        if ! git show-ref --heads --quiet stable-docs; then
           git checkout -b stable-docs
           git push -u origin stable-docs
         fi
