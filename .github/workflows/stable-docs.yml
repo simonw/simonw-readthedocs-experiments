@@ -16,7 +16,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
-
+      with:
+        fetch-depth: 0  # We need all commits to find docs/ changes
     - name: Set up Git user
       run: |
         git config user.name "Automated"
@@ -40,11 +41,9 @@ jobs:
     - name: Handle Commit to Main
       if: contains(github.event.head_commit.message, '!stable-docs')
       run: |
-        git fetch --all
-        git diff-tree --no-commit-id --name-only -r ${{ github.sha }} | grep '^docs/' > changes.txt
-        if [[ -s changes.txt ]]; then
-          git checkout stable-docs
-          git checkout ${{ github.sha }} -- $(cat changes.txt)
-          git commit -m "Cherry-picked docs changes from ${{ github.sha }}"
-          git push origin stable-docs
-        fi
+        # Apply all changes that affect docs/ directory
+        for commit in $(git log --format="%H" origin/main ^origin/stable-docs); do
+          git show $commit -- docs/ | git apply -
+          git add docs/
+          git commit -m "Cherry-picked docs changes from $commit" || true
+        done
