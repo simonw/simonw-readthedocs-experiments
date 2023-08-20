@@ -41,8 +41,8 @@ jobs:
     - name: Handle Commit to Main
       if: contains(github.event.head_commit.message, '!stable-docs')
       run: |
-        git fetch origin stable-docs:stable-docs
-        git checkout stable-docs
+        git fetch origin
+        git checkout -b stable-docs origin/stable-docs
         # !stable-docs should only be in the one commit, so apply changes from that commit
         PATCH=$(git show ${{ github.sha }} -- docs/)
         # Check if patch is non-empty
