@@ -8,4 +8,4 @@ This edit should update /en/latest/ but not change /en/stable/
 
 Adding `!stable-docs` to a commit message should trigger an update of `stable-docs`. Let's try that again now.
 
-Triggering a commit.
+Triggering a commit should create that branch.
