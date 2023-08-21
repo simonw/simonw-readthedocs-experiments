@@ -59,6 +59,6 @@ jobs:
           git commit -m "Doc changes from ${{ github.sha }}"
           git push origin stable
         else
-          echo "No changes to docs/ in this commit."
+          echo "No changes to docs/ in this commit"
           exit 0
         fi
