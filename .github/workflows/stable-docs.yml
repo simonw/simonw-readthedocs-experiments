@@ -23,26 +23,26 @@ jobs:
         git config user.name "Automated"
         git config user.email "actions@users.noreply.github.com"
 
-    - name: Check if stable-docs branch exists
+    - name: Check if stable branch exists
       run: |
-        if ! git ls-remote --heads origin stable-docs | grep stable-docs; then
-          git checkout -b stable-docs
-          git push -u origin stable-docs
+        if ! git ls-remote --heads origin stable | grep stable; then
+          git checkout -b stable
+          git push -u origin stable
         fi
 
     - name: Handle Release
       if: github.event_name == 'release'
       run: |
         git fetch --all
-        git checkout stable-docs
+        git checkout stable
         git reset --hard ${GITHUB_REF#refs/tags/}
-        git push origin stable-docs --force
+        git push origin stable --force
 
     - name: Handle Commit to Main
       if: contains(github.event.head_commit.message, '!stable-docs')
       run: |
         git fetch origin
-        git checkout -b stable-docs origin/stable-docs
+        git checkout -b stable origin/stable
         # !stable-docs should only be in the one commit, so apply changes from that commit
         PATCH=$(git show ${{ github.sha }} -- docs/)
         # Check if patch is non-empty
@@ -50,7 +50,7 @@ jobs:
           echo "$PATCH" | git apply -
           git add docs/
           git commit -m "Cherry-picked docs changes from ${{ github.sha }}"
-          git push origin stable-docs
+          git push origin stable
         else
           echo "No changes to docs/ in this commit."
           exit 0
